@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const Orders = require("../models/orders");
+const Orders = require("../models/order");
 const verify = require("./VerifyToken");
 router.post("/", verify, async (req, res) => {
-  const userOrders = Orders.findOne({ userId: req.user });
+  const userOrders = await Orders.findOne({ userId: req.user });
   if (userOrders) {
     const savedorders = await Orders.updateOne(
       { userId: req.user },
@@ -19,7 +19,11 @@ router.post("/", verify, async (req, res) => {
   }
 });
 router.get("/", verify, async (req, res) => {
-  const userOrders = Orders.findOne({ userId: req.user });
-  res.send(userOrders.orderItems);
+  const userOrders = await Orders.findOne({ userId: req.user });
+  if (userOrders) {
+    res.send(userOrders.orderItems);
+  } else {
+    res.send("No Orders");
+  }
 });
 module.exports = router;

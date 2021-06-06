@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Cart = require("../models/cart");
 const verify = require("./VerifyToken");
 router.post("/", verify, async (req, res) => {
-  const userCart = Cart.findOne({ userId: req.user });
+  const userCart = await Cart.findOne({ userId: req.user });
   if (userCart) {
     const savedCart = await Cart.updateOne(
       { userId: req.user },
@@ -10,16 +10,20 @@ router.post("/", verify, async (req, res) => {
     );
     res.send("Cart Updated");
   } else {
-    const Cart = new Cart({
+    const cart = new Cart({
       userId: req.user,
       cartItems: req.body.cartItems,
     });
-    const savedCart = await Cart.save();
+    const savedCart = await cart.save();
     res.send("Added to cart");
   }
 });
 router.get("/", verify, async (req, res) => {
-  const userCart = Cart.findOne({ userId: req.user });
-  res.send(userCart.cartItems);
+  const userCart = await Cart.findOne({ userId: req.user });
+  if (userCart) {
+    res.send(userCart.cartItems);
+  } else {
+    res.send("No Items On cart");
+  }
 });
 module.exports = router;
