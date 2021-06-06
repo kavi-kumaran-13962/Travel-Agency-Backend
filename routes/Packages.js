@@ -3,6 +3,7 @@ const Package = require("../models/package");
 const verify = require("./VerifyToken");
 router.post("/", verify, async (req, res) => {
   const package = new Package({
+    name: req.body.name,
     numberOfDays: req.body.numberOfDays,
     Price: req.body.Price,
     Type: req.body.Type,
