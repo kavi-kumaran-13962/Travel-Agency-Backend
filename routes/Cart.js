@@ -23,7 +23,7 @@ router.get("/", verify, async (req, res) => {
   if (userCart) {
     res.send(userCart.cartItems);
   } else {
-    res.send("No Items On cart");
+    res.send({ error: "No Items On cart" });
   }
 });
 module.exports = router;
